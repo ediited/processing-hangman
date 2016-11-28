@@ -133,6 +133,10 @@ var drawHang = function() {
 
 
 //wird bei jedem knopfdruck aufgerufen
+var draw = function() {
+    var akt = popMatrix;
+    
+};
 var keyPressed = function() {
     if (running) {
         var fehler = true;
@@ -199,6 +203,9 @@ var keyPressed = function() {
 };
 
 
+var draw = function() {
+    prepareWord();
+};
 //um alles zu initialisieren
 
 drawScore();
