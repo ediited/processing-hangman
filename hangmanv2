@@ -1,5 +1,5 @@
 var lösungswort;
-var wörterSammlung = ["Hallo"];
+var wörterSammlung = ["Hallo","Ananas","Hochschule","Apfel","Birne","Kirsche","Heuschrecke","Schwimmbad","essen","trinken"];
 lösungswort = wörterSammlung[round(random(0,wörterSammlung.length-1))];
 //println(lösungswort);
 var schonGerateneBuchstaben = [];
@@ -8,9 +8,15 @@ var schonEntdeckt=[];
 var fehlerStufe = 0;
 var drawArray = [];
 var lineGröße = 0;
-var drawArray = [];
+var explArray = [];
 var mistakes = 0;
-
+var setupX = -53;
+var setupY = 0;
+var anzahlFehler = 0;
+var lost = false;
+var gameOverSteps=0;
+var winCount=0;
+var score=0;
 
 var includes = function(sucharray,suche){
   for (var i = 0; i<sucharray.length;i++){
@@ -21,38 +27,7 @@ var includes = function(sucharray,suche){
   return false;
 };
 
-var hangman = function(part){
-  
-  
-    
-};
-var drawLinien = function() {
-    stroke(0, 0, 0);
-     lineGröße = width / lösungswort.length;
-    //erstellung der Linien 
-    for (var i = 0; i < lösungswort.length; i++) {
-        strokeWeight(2);
-        line(i * lineGröße + 10, 450, i * lineGröße + lineGröße - 10, 450);
-    }
-    //println(solution);    
-};
-var fehler = function(){
-  println("falsche buchstaben");  
-  
-};
-var drawBuchstaben = function(){
-    for (var i = 0; i<lösungswort.length;i++){
-     if (schonGerateneBuchstaben[i]===true){
-        fill(0, 0, 0);
-        textAlign(CENTER);
-        textSize(width / lösungswort.length / 2);
-        text(lösungswort[i], lineGröße * i + lineGröße / 2, 440);
-        //println("buchstabe Schreiben");
-        noFill();
-     }
-    }
-};
-var explosion = function(startX,startY){
+var explosion = function(startX,startY,anzahl){
     this.x = startX;
     this.y = startY;
     
@@ -70,7 +45,7 @@ var explosion = function(startX,startY){
     };
     
     
-    for (var  i = 0; i<100;i++){
+    for (var  i = 0; i<anzahl;i++){
         bullarray[i] = new this.bullet(startX,startY);
         bullarray[i].xdir = random(-1,1)*10;
         bullarray[i].ydir = random(-1,1)*10;
@@ -80,7 +55,7 @@ var explosion = function(startX,startY){
     
     this.draw = function() {
         if (this.life<100){
-        for (var i = 0; i<100;i++){
+        for (var i = 0; i<anzahl;i++){
          fill(bullarray[i].color[0],bullarray[i].color[1],bullarray[i].color[2]);
          stroke(bullarray[i].color[0]+10,bullarray[i].color[1]+10,bullarray[i].color[2]+10);
          ellipse(bullarray[i].x,bullarray[i].y,bullarray[i].size,bullarray[i].size);  
@@ -95,15 +70,172 @@ var explosion = function(startX,startY){
     
 
 };
+var reset = function(){
+       lösungswort = wörterSammlung[round(random(0,wörterSammlung.length-1))];
+     schonGerateneBuchstaben = [];
+     drawBuchstabenArray = [];
+     schonEntdeckt=[];
+     fehlerStufe = 0;
+     drawArray = [];
+     //lineGröße = 0;
+     drawArray = [];
+     winCount=0;
+     mistakes=0;
+     anzahlFehler = 0;  
+};
+
+var hangman = function(part){
+  this.progress = 100;
+  var drawSamml = [
+  function() {
+        stroke(0, 0, 0);
+        strokeWeight(6);
+        noFill();
+        arc(360 + setupX, 328 + setupY, 100, 100, -160, -20);
+        strokeWeight(6);
+        line(360 + setupX, 120 + setupY, 360 + setupX, 275 + setupY);
+        noStroke();
+        fill(255, 247, 247);
+        rect(307+setupX,100+setupY,105,224*(this.progress/100));
+        if(this.progress>=0){
+         this.progress-=0.5;   
+        }
+       
+  },
+  function() {
+        stroke(0, 0, 0);
+        strokeWeight(6);
+        line(356 + setupX, 120 + setupY, 259 + setupX, 120 + setupY);
+        line(318 + setupX, 120 + setupY, 358 + setupX, 156 + setupY);
+        noStroke();
+        rect(250+setupX,110+setupY,110*(this.progress/100),100);
+        if(this.progress>=0){
+         this.progress-=0.5;   
+        }
+        
+  },
+  function() {
+        stroke(0, 0, 0);
+        strokeWeight(4);
+        line(259 + setupX, 120 + setupY, 259 + setupX, 152 + setupY);
+        noFill();
+        bezier(257 + setupX, 153 + setupY, 202 + setupX, 212 + setupY, 325 +                      setupX, 205 + setupY, 259 + setupX, 150 + setupY);
+        noStroke();
+        fill(255, 247, 247);
+        rect(239+setupX,123+setupY,44,80*(this.progress/100));
+         if(this.progress>=0){
+         this.progress-=0.5;   
+        }
+  },
+  function() {
+        if(this.progress>=100){
+         this.progress=0;   
+        }else if(this.progress<99){
+         this.progress+=1.2;   
+        }
+        stroke(0, 0, 0,1000*(this.progress/100));
+        strokeWeight(3);
+        fill(255, 247, 194,1000*(this.progress/100));
+        ellipse(260 + setupX, 180 + setupY, 40*(this.progress/100), 40*(this.progress/100));
+        strokeWeight(3);
+        noFill();
+        arc(258 + setupX, 201 + setupY, 30, 30, -120*(this.progress/100), -50*(this.progress/100));
+        strokeWeight(2);
+        ellipse(250 + setupX, 175 + setupY, 3, 3);
+        ellipse(268 + setupX, 175 + setupY, 3, 3);
+  },
+  function() {
+        stroke(0,0,0);
+        strokeWeight(3);
+        line(258 + setupX, 201 + setupY, 280 + setupX, 223 + setupY);
+        line(258 + setupX, 201 + setupY, 240 + setupX, 220 + setupY);
+        fill(255, 247, 247);
+        noStroke();       
+        rect(179,235,54,25*(-(this.progress/100)));
+        if(this.progress>=0){
+         this.progress-=2;   
+        }
+  },
+  function() {
+        stroke(0, 0, 0);
+        strokeWeight(3);
+        line(258 + setupX, 201 + setupY, 258 + setupX, 231 + setupY);
+        stroke(255, 247, 247);
+        line(258 + setupX, 231 -30*(this.progress/100) + setupY, 258 + setupX, 235  + setupY);
+      if(this.progress>=0){
+         this.progress-=2;   
+        }
+        
+  },
+  function() {
+       stroke(0,0,0);
+       strokeWeight(3);
+       line(259 + setupX, 231 + setupY, 273 + setupX, 248 + setupY);
+       line(258 + setupX, 231 + setupY, 244 + setupX, 248 + setupY);
+       noStroke();
+       fill(255,247,247);
+       rect(188,230,50,50*(this.progress/100));
+       if(this.progress>=0){
+         this.progress-=2;   
+        }
+       
+  },
+  function() {
+      if(!lost){
+      append(explArray, new explosion(width/2,height/2,500));
+      lost=true;
+      }
+  },
+  ];  
+  
+  this.draw=drawSamml[part];
+};
+var drawLinien = function() {
+    stroke(0, 0, 0);
+     lineGröße = width / lösungswort.length;
+    //erstellung der Linien 
+    for (var i = 0; i < lösungswort.length; i++) {
+        strokeWeight(2);
+        line(i * lineGröße + 10, 450, i * lineGröße + lineGröße - 10, 450);
+    }
+    //println(solution);    
+};
+var fehler = function(){
+  append(drawArray,new hangman(anzahlFehler));
+  anzahlFehler++;
+};
+var drawBuchstaben = function(){
+    for (var i = 0; i<lösungswort.length;i++){
+     if (schonGerateneBuchstaben[i]===true){
+        fill(0, 0, 0);
+        textAlign(CENTER);
+        textSize(width / lösungswort.length / 2);
+        text(lösungswort[i], lineGröße * i + lineGröße / 2, 440);
+        //println("buchstabe Schreiben");
+        noFill();
+     }
+    }
+};
+
 var keyPressed = function(){
-    
    var keyTest = key.toString();  
-   var mitfehler = true;
-   if (!includes(schonEntdeckt,key)){ 
+   var mitfehler = true;  
+   if(winCount === lösungswort.length){
+   if(key.toString() ===" "){
+     //println("you win");
+    reset();
+     score++;
+      
+   }
+    
+   }
+ 
+else   if (!includes(schonEntdeckt,key)){ 
     for (var i  = 0 ; i < lösungswort.length ; i++){
       if(keyTest===lösungswort[i]||keyTest.toUpperCase() === lösungswort[i]  ){
-      append(drawArray,new explosion(lineGröße * i + lineGröße / 2,420)); 
+      append(explArray,new explosion(lineGröße * i + lineGröße / 2,420,100)); 
       schonGerateneBuchstaben[i]=true;
+      winCount++;
       mitfehler = false;
       }
      }
@@ -114,31 +246,60 @@ var keyPressed = function(){
    }
    
 };
-
-
-background(0, 0, 0);
-
-
-
-
-
 var draw = function() {
+    if(!lost){
     background(255, 247, 247);
-     drawLinien();
+    
+    drawLinien();
      
     drawBuchstaben();
       
     for (var i = 0; i<drawArray.length;i++){
     drawArray[i].draw();   
-    }
     
+    
+    }
+    }
+    if(lost){
+     if(gameOverSteps<=100){
+      gameOverSteps++;   
+     }
+     fill(255, 247, 247,90);
+     rect(-5,-5,1000,1000);
+     stroke(0, 0, 0);
+     fill(0,0,0,gameOverSteps);
+     textAlign(CENTER,CENTER);
+     textSize(80*(gameOverSteps/100));
+     text("Game Over",width/2,height/2);   
+     textSize(40*(gameOverSteps/100));    
+     text("Score: "+score,width/2,height/2+60);   
+     strokeWeight(2);
+     stroke(117, 84, 84,30*gameOverSteps/100);
+     fill(117, 117, 117,30*gameOverSteps/100);
+     rect(178,464,140,59,30);
+     fill(69, 69, 69,90*gameOverSteps/100);
+     textSize(40);    
+     text("replay",width/2,height/2+221);   
+     
+            
+    }
+    for (var i = 0; i<explArray.length;i++){
+    explArray[i].draw();   
+    }
 
 
 };
 
-/*
-var mousePressed= function(){
-    append(explarray,new explosion(mouseX,mouseY));
+
+var mousePressed = function(){
+    //println(mouseX+" "+mouseY);
+   //178,462
+   //317,520
+   if(lost&&(mouseX<317&&mouseX>178)&&(mouseY<520&&mouseY>462)){
+    lost = false; 
+    reset();
+   }
+
 };
 
-*/
+
