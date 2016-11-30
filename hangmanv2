@@ -246,6 +246,7 @@ else   if (!includes(schonEntdeckt,key)){
    }
    
 };
+//lost = true;
 var draw = function() {
     if(!lost){
     background(255, 247, 247);
@@ -253,6 +254,11 @@ var draw = function() {
     drawLinien();
      
     drawBuchstaben();
+    if (winCount === lösungswort.length){
+     textAlign(CENTER,CENTER);
+     textSize(30);    
+     text("press space",width/2,height/2+221);     
+    }
       
     for (var i = 0; i<drawArray.length;i++){
     drawArray[i].draw();   
