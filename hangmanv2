@@ -1,6 +1,6 @@
 var lösungswort;
-var wörterSammlung = ["Hallo", "Ananas", "Hochschule", "Apfel", "Birne", "Kirsche", "Heuschrecke", "Schwimmbad", "essen", "trinken"];
-lösungswort = wörterSammlung[round(random(0, wörterSammlung.length - 1))];
+var wörterSammlung = [];
+//lösungswort = wörterSammlung[round(random(0, wörterSammlung.length - 1))];
 //println(lösungswort);
 var schonGerateneBuchstaben = [];
 var drawBuchstabenArray = [];
@@ -18,6 +18,7 @@ var gameOverSteps = 0;
 var winCount = 0;
 var score = 0;
 var failArray = [];
+var started = false;
 
 var includes = function(sucharray, suche) {
     for (var i = 0; i < sucharray.length; i++) {
@@ -267,8 +268,11 @@ var keyPressed = function() {
 //var sl = new slicedLetter("h",100,100);
 //append(failArray,sl);
 var draw = function() {
+    background(255, 247, 247);
+    //looping from here
+    if (started){
     if (!lost) {
-        background(255, 247, 247);
+        
         drawLinien();
         drawBuchstaben();
 
@@ -313,18 +317,72 @@ var draw = function() {
     for (var i = 0; i < explArray.length; i++) {
         explArray[i].draw();
     }
-
-
+    }
+    else{
+     fill(232, 232, 232);
+     rect(0+100,0+250,width-200,50,10);   
+     rect(0+100,0+310,width-200,50,10);   
+     rect(0+100,0+370,width-200,50,10);   
+     rect(0+100,0+430,width-200,50,10);   
+     fill(0, 0, 0);
+     textSize(25);
+     textAlign(CENTER,CENTER);
+     text("easy",width/2,275);
+     text("medium",width/2,335);
+     text("hard",width/2,395);
+     text("fuck that shit hard",width/2,455);
+    }
 };
 
 
 var mousePressed = function() {
     //println(mouseX+" "+mouseY);
-    //178,462
-    //317,520
+    //99,250
+    //400,297
+    if(started){
     if (lost && (mouseX < 317 && mouseX > 178) && (mouseY < 520 && mouseY > 462)) {
         lost = false;
         reset();
     }
+    }
+    else{
+        if(mouseX < 400 && mouseX > 100 && mouseY < 300 && mouseY > 250){
+            wörterSammlung  = [
+                "Hallo","Apfel","Birne" ,"Käse","Mensch","Zauberer"                 ,"Titanic","Drucker","Maus"  ,"Kalender","Lokomotive","Basel","Autobahn","Bangkok","Telefon","IMD","Schweiz","Basel","Drucker","Bearbeitung"
+];            
+  lösungswort = wörterSammlung[round(random(0,wörterSammlung.length-1))];
+  started = true;
+        }
+        if(mouseX < 400 && mouseX > 100 && mouseY < 300+60 && mouseY > 250+60){
+            wörterSammlung = [
+            "Hallo","Apfel","Birne" ,"Käse","Mensch","Zauberer"                 ,"Titanic","Drucker","Maus"  ,"Kalender","Lokomotive","Basel","Autobahn","Bangkok","Telefon","IMD","Schweiz","Basel","Drucker","Bearbeitung"
+];              
+            lösungswort = wörterSammlung[round(random(0,wörterSammlung.length-1))];
+        
+        started = true;
+        }
+        if(mouseX < 400 && mouseX > 100 && mouseY < 300+120 && mouseY > 250+120){
+        wörterSammlung = [    
+        "Kiosk","Zyklop","Faupax","Rhythmus","Scarabäus","Whiskey","Toxin","Plasma","Heuschrecke","Rasenmäher","Attentat","Eichenwald"];
+            
+            
+                
+            lösungswort = wörterSammlung[round(random(0,wörterSammlung.length-1))];
+        
+        started = true;
+            
+        }
+        if(mouseX < 400 && mouseX > 100 && mouseY < 300+180 && mouseY > 250+180){
+            wörterSammlung = ["Ribonuklein","Oxidation","Desoxyribonukleinsäure","Acetyl","Hydrochlorig","Recycling"];
+            
+              
+            lösungswort = wörterSammlung[round(random(0,wörterSammlung.length-1))];
+        
+        started = true;
+            
+            
+        }
+    }
+    
 
 };
